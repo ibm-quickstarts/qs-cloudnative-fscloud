@@ -39,7 +39,7 @@ fi
 credentials=$(ibmcloud resource service-key appid-example-bank-credentials)
 
 mgmturl=$(echo "$credentials" | awk '/managementUrl/{ print $2 }')
-apikey=$(echo "$credentials" | awk '/apikey/{ print $2 }')
+appid_apikey=$(echo "$credentials" | awk '/apikey/{ print $2 }')
 
 iamtoken=$(ibmcloud iam oauth-tokens | awk '/IAM/{ print $3" "$4 }')
 
@@ -170,19 +170,20 @@ code=$(echo "${response}" | tail -n1)
 
 printf "\nApp ID instance created and configured"
 printf "\nManagement server: $mgmturl"
-printf "\nApi key:           $apikey"
+printf "\nApi key:           $appid_apikey"
 printf "\n"
 
 # Create secrets
 # Excerpt from example-bank-toolchain script (https://github.com/IBM/example-bank-toolchain/blob/main/scripts/createsecrets.sh)
+sleep 10  # Waiting 10 seconds for API key to be established
 MGMTEP=$mgmturl
-APIKEY=$apikey
+APPID_APIKEY=$appid_apikey
 
 response=$(curl -k -v -X POST -w "\n%{http_code}" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -H "Accept: application/json" \
   --data-urlencode "grant_type=urn:ibm:params:oauth:grant-type:apikey" \
-  --data-urlencode "apikey=$APIKEY" \
+  --data-urlencode "apikey=$APPID_APIKEY" \
   "https://iam.cloud.ibm.com/identity/token")
 
 echo $response
@@ -213,10 +214,10 @@ oc create secret generic bank-oidc-secret --from-literal=OIDC_JWKENDPOINTURL=$oa
 
 oc create secret generic bank-appid-secret --from-literal=APPID_TENANTID=$tenantid --from-literal=APPID_SERVICE_URL=https://$appidhost
 
-oc create secret generic bank-iam-secret --from-literal=IAM_APIKEY=$APIKEY --from-literal=IAM_SERVICE_URL=https://iam.cloud.ibm.com/identity/token
+oc create secret generic bank-iam-secret --from-literal=IAM_APIKEY=$APPID_APIKEY --from-literal=IAM_SERVICE_URL=https://iam.cloud.ibm.com/identity/token
 
 oc create secret generic mobile-simulator-secrets \
-  --from-literal=APP_ID_IAM_APIKEY=$APIKEY \
+  --from-literal=APP_ID_IAM_APIKEY=$APPID_APIKEY \
   --from-literal=APP_ID_MANAGEMENT_URL=$MGMTEP \
   --from-literal=APP_ID_CLIENT_ID=$clientid \
   --from-literal=APP_ID_CLIENT_SECRET=$secret \
