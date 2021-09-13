@@ -216,12 +216,10 @@ tar -xvf openshift-client-linux-4.6.42.tar.gz
 mv /tmp/oc /usr/local/bin/oc
 ibmcloud oc cluster config -c $CLUSTER_NAME
 
+# Create OC secrets
 oc create secret generic bank-oidc-secret --from-literal=OIDC_JWKENDPOINTURL=$oauthserverurl/publickeys --from-literal=OIDC_ISSUERIDENTIFIER=$oauthserverurl --from-literal=OIDC_AUDIENCES=$clientid
-
 oc create secret generic bank-appid-secret --from-literal=APPID_TENANTID=$tenantid --from-literal=APPID_SERVICE_URL=https://$appidhost
-
 oc create secret generic bank-iam-secret --from-literal=IAM_APIKEY=$APPID_APIKEY --from-literal=IAM_SERVICE_URL=https://iam.cloud.ibm.com/identity/token
-
 oc create secret generic mobile-simulator-secrets \
   --from-literal=APP_ID_IAM_APIKEY=$APPID_APIKEY \
   --from-literal=APP_ID_MANAGEMENT_URL=$MGMTEP \
@@ -230,9 +228,7 @@ oc create secret generic mobile-simulator-secrets \
   --from-literal=APP_ID_TOKEN_URL=$oauthserverurl \
   --from-literal=PROXY_USER_MICROSERVICE=user-service:9080 \
   --from-literal=PROXY_TRANSACTION_MICROSERVICE=transaction-service:9080
-
 oc create secret generic bank-oidc-adminuser --from-literal=APP_ID_ADMIN_USER=bankadmin --from-literal=APP_ID_ADMIN_PASSWORD=password
-
 oc create secret generic bank-db-secret --from-literal=DB_SERVERNAME=creditdb --from-literal=DB_PORTNUMBER=5432 --from-literal=DB_DATABASENAME=example --from-literal=DB_USER=postgres --from-literal=DB_PASSWORD=postgres
 
 # create the toolchain
@@ -241,7 +237,7 @@ PARAMETERS="region_id=$TOOLCHAIN_REGION&resourceGroupId=$RESOURCE_GROUP_ID&autoc
 `"&registryRegion=$REGION&registryNamespace=$CONTAINER_REGISTRY_NAMESPACE&prodRegion=$REGION"`
 `"&prodResourceGroup=$RESOURCE_GROUP&prodClusterName=$CLUSTER_NAME&prodClusterNamespace=$CONTAINER_REGISTRY_NAMESPACE"`
 `"&toolchainName=$TOOLCHAIN_NAME&branch=$BRANCH&pipeline_type=$PIPELINE_TYPE"
-#echo $PARAMETERS
+echo $PARAMETERS
 
 RESPONSE=$(curl -i -X POST \
   -H 'Content-Type: application/x-www-form-urlencoded' \
