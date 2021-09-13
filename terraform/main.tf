@@ -48,7 +48,7 @@ resource "null_resource" "create_kubernetes_toolchain" {
       CLUSTER_NAME            = var.cluster_name
       CLUSTER_NAMESPACE       = var.cluster_namespace
       CONTAINER_REGISTRY_NAMESPACE = var.registry_namespace
-      TOOLCHAIN_NAME          = var.toolchain_name
+      TOOLCHAIN_NAME          = var.toolchain_name == "example-bank-toolchain-<timestamp>" ? "example-bank-toolchain-${formatdate("YYYYMMDDhhmm", timestamp())}" : var.toolchain_name
       PIPELINE_TYPE           = "tekton"
       BRANCH                  = var.branch
     }

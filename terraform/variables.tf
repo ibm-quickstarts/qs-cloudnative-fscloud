@@ -1,7 +1,7 @@
 variable "toolchain_name" {
   type        = string
-  description = "Name of the Compliance CI toolchain."
-  default     = "example-bank-toolchain"
+  description = "Name of the Compliance CI toolchain. NOTE: The <timestamp> will be in the format YYYYMMDDhhmm."
+  default     = "example-bank-toolchain-<timestamp>"
 }
 
 variable "region" {
