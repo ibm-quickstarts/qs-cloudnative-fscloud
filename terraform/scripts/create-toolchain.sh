@@ -214,7 +214,7 @@ tar -xvf openshift-client-linux-4.6.42.tar.gz
 mv oc /usr/local/bin/oc
 oc version
 ibmcloud plugin update --all
-ibmcloud oc cluster config -c bank_vpc_cluster --admin
+ibmcloud oc cluster config -c $CLUSTER_NAME --admin
 sleep 10  # Waiting 10 seconds for configuration to be established
 
 # Create OC secrets
