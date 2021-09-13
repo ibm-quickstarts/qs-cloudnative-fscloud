@@ -76,12 +76,14 @@ code=$(echo "${response}" | tail -n1)
 [ "$code" -ne "200" ] && printf "\nFAILED to set cloud directory options\n" && exit 1
 
 printf "\nCreating application\n"
-#APP_PARAMS='{"name": $MOBILE_SIM, "type": "regularwebapp"}'
+APP_PARAMS=$( jq -n \
+  --arg ms "$MOBILE_SIM" \
+  '{name: $ms, type: "regularwebapp"}' )
 response=$(curl -X POST -w "\n%{http_code}" \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -H "Authorization: $iamtoken" \
-  -d '{"name": $MOBILE_SIM, "type": "regularwebapp"}' \
+  -d "$APP_PARAMS" \
   "${mgmturl}/applications")
 
 echo $response
