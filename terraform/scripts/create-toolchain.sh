@@ -39,7 +39,7 @@ fi
 credentials=$(ibmcloud resource service-key appid-example-bank-credentials)
 
 mgmturl=$(echo "$credentials" | awk '/managementUrl/{ print $2 }')
-appid_apikey=$(echo "$credentials" | awk '/apikey/{ print $2 }')
+appid_apikey=$(echo "$credentials" | awk '/apikey:/{ print $2 }')
 
 iamtoken=$(ibmcloud iam oauth-tokens | awk '/IAM/{ print $3" "$4 }')
 
