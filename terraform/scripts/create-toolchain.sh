@@ -175,7 +175,6 @@ printf "\n"
 
 # Create secrets
 # Excerpt from example-bank-toolchain script (https://github.com/IBM/example-bank-toolchain/blob/main/scripts/createsecrets.sh)
-sleep 10  # Waiting 10 seconds for API key to be established
 MGMTEP=$mgmturl
 APPID_APIKEY=$appid_apikey
 
@@ -210,11 +209,13 @@ oauthserverurl=$(echo "${response}"| head -n1 | jq -j '.applications[0].oAuthSer
 appidhost=$(echo "${oauthserverurl}" | awk -F/ '{print $3}')
 
 # Install OpenShift CLI
-cd /tmp
 wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.42/openshift-client-linux-4.6.42.tar.gz
 tar -xvf openshift-client-linux-4.6.42.tar.gz
-mv /tmp/oc /usr/local/bin/oc
-ibmcloud oc cluster config -c $CLUSTER_NAME
+mv oc /usr/local/bin/oc
+oc version
+ibmcloud plugin update --all
+ibmcloud oc cluster config -c bank_vpc_cluster --admin
+sleep 10  # Waiting 10 seconds for configuration to be established
 
 # Create OC secrets
 oc create secret generic bank-oidc-secret --from-literal=OIDC_JWKENDPOINTURL=$oauthserverurl/publickeys --from-literal=OIDC_ISSUERIDENTIFIER=$oauthserverurl --from-literal=OIDC_AUDIENCES=$clientid
