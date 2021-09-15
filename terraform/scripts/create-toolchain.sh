@@ -168,10 +168,10 @@ echo $response
 code=$(echo "${response}" | tail -n1)
 [ "$code" -ne "200" ] && printf "\nFAILED to add admin role to admin user\n" && exit 1
 
-printf "\nApp ID instance created and configured"
-printf "\nManagement server: $mgmturl"
-printf "\nApi key:           $appid_apikey"
-printf "\n"
+#printf "\nApp ID instance created and configured"
+#printf "\nManagement server: $mgmturl"
+#printf "\nApi key:           $appid_apikey"
+#printf "\n"
 
 # Create secrets
 # Excerpt from example-bank-toolchain script (https://github.com/IBM/example-bank-toolchain/blob/main/scripts/createsecrets.sh)
@@ -211,13 +211,13 @@ appidhost=$(echo "${oauthserverurl}" | awk -F/ '{print $3}')
 # Install OpenShift CLI
 wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.6.42/openshift-client-linux-4.6.42.tar.gz
 tar -xvf openshift-client-linux-4.6.42.tar.gz
-mv oc /usr/local/bin/oc
 oc version
 ibmcloud plugin update --all
 ibmcloud oc cluster config -c $CLUSTER_NAME --admin
 sleep 10  # Waiting 10 seconds for configuration to be established
 
 # Create OC secrets
+echo "Creating secrets..."
 oc create secret generic bank-oidc-secret --from-literal=OIDC_JWKENDPOINTURL=$oauthserverurl/publickeys --from-literal=OIDC_ISSUERIDENTIFIER=$oauthserverurl --from-literal=OIDC_AUDIENCES=$clientid
 oc create secret generic bank-appid-secret --from-literal=APPID_TENANTID=$tenantid --from-literal=APPID_SERVICE_URL=https://$appidhost
 oc create secret generic bank-iam-secret --from-literal=IAM_APIKEY=$APPID_APIKEY --from-literal=IAM_SERVICE_URL=https://iam.cloud.ibm.com/identity/token
@@ -233,12 +233,13 @@ oc create secret generic bank-oidc-adminuser --from-literal=APP_ID_ADMIN_USER=ba
 oc create secret generic bank-db-secret --from-literal=DB_SERVERNAME=creditdb --from-literal=DB_PORTNUMBER=5432 --from-literal=DB_DATABASENAME=example --from-literal=DB_USER=postgres --from-literal=DB_PASSWORD=postgres
 
 # create the toolchain
+echo "Creating the toolchain..."
 PARAMETERS="region_id=$TOOLCHAIN_REGION&resourceGroupId=$RESOURCE_GROUP_ID&autocreate=true"`
 `"&repository=$TOOLCHAIN_TEMPLATE_REPO&sourceZipUrl=$APPLICATION_REPO&app_repo=$APPLICATION_REPO&apiKey=$API_KEY"`
 `"&registryRegion=$REGION&registryNamespace=$CONTAINER_REGISTRY_NAMESPACE&prodRegion=$REGION"`
 `"&prodResourceGroup=$RESOURCE_GROUP&prodClusterName=$CLUSTER_NAME&prodClusterNamespace=$CONTAINER_REGISTRY_NAMESPACE"`
 `"&toolchainName=$TOOLCHAIN_NAME&branch=$BRANCH&pipeline_type=$PIPELINE_TYPE"
-echo $PARAMETERS
+#echo $PARAMETERS
 
 RESPONSE=$(curl -i -X POST \
   -H 'Content-Type: application/x-www-form-urlencoded' \

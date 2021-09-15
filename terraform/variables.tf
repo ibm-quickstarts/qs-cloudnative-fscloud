@@ -1,9 +1,3 @@
-variable "toolchain_name" {
-  type        = string
-  description = "Name of the toolchain for the example-bank-app. NOTE: The <timestamp> will be in the format YYYYMMDDhhmm."
-  default     = "example-bank-toolchain-<timestamp>"
-}
-
 variable "region" {
   type        = string
   description = "IBM Cloud region where your application will be deployed (to view your current targeted region `ibmcloud cr region`)"
