@@ -215,6 +215,8 @@ oc version
 ibmcloud plugin update --all
 ibmcloud oc cluster config -c $CLUSTER_NAME --admin
 sleep 10  # Waiting 10 seconds for configuration to be established
+echo "Creating new project 'example-bank'..."
+oc project example-bank
 
 # Create OC secrets
 echo "Creating secrets..."
@@ -232,14 +234,64 @@ oc create secret generic mobile-simulator-secrets \
 oc create secret generic bank-oidc-adminuser --from-literal=APP_ID_ADMIN_USER=bankadmin --from-literal=APP_ID_ADMIN_PASSWORD=password
 oc create secret generic bank-db-secret --from-literal=DB_SERVERNAME=creditdb --from-literal=DB_PORTNUMBER=5432 --from-literal=DB_DATABASENAME=example --from-literal=DB_USER=postgres --from-literal=DB_PASSWORD=postgres
 
+# create the operator group
+echo "Creating the OperatorGroup 'bank-postgresql'..."
+oc apply -f operatorgroup.yaml
+
+# create the subscription
+echo "Creating the Subscription 'bank-subscription'..."
+oc apply -f sub.yaml
+
+# create the database
+echo "Creating the PostgreSQL database 'creditdb'..."
+oc apply -f db.yaml
+
+echo "Waiting for database to be created..."
+sleep 30
+WAIT=240
+COUNTER=0
+while [ $COUNTER -lt $WAIT ]; do
+  DB_STATUS=$(oc get pods | grep creditdb | awk {'print $3'})
+  if [[ $DB_STATUS == "Running" ]];then
+    echo "DB Status: $DB_STATUS"
+    break
+  else
+    COUNTER=$((COUNTER+30))
+    echo "DB Status: $DB_STATUS"
+    if [[ $COUNTER == $WAIT ]];then
+      echo "DB took longer than 4 minutes to create. This could be a problem."
+      break
+    fi
+    echo "Trying again in 30 seconds..."
+    sleep 30
+  fi
+done
+
+# connect to database
+echo "Connecting to the 'creditdb' database..."
+oc expose deploy creditdb --port=5432 --target-port=5432 --type=LoadBalancer --name my-pg-svc
+oc get svc
+kubectl create secret generic bank-db-secret --from-literal=DB_SERVERNAME=creditdb --from-literal=DB_PORTNUMBER=5432 \
+  --from-literal=DB_DATABASENAME=example --from-literal=DB_USER=postgres --from-literal=DB_PASSWORD=postgres
+oc get secrets
+
+# create job
+echo "Creating the job 'cc-schema-load'..."
+oc apply -f job.yaml
+echo "Waiting 60 seconds for job to complete..."
+sleep 60
+oc get jobs
+oc get pods
+
+
 # create the toolchain
 echo "Creating the toolchain..."
 PARAMETERS="region_id=$TOOLCHAIN_REGION&resourceGroupId=$RESOURCE_GROUP_ID&autocreate=true"`
 `"&repository=$TOOLCHAIN_TEMPLATE_REPO&sourceZipUrl=$APPLICATION_REPO&app_repo=$APPLICATION_REPO&apiKey=$API_KEY"`
 `"&registryRegion=$REGION&registryNamespace=$CONTAINER_REGISTRY_NAMESPACE&prodRegion=$REGION"`
-`"&prodResourceGroup=$RESOURCE_GROUP&prodClusterName=$CLUSTER_NAME&prodClusterNamespace=$CONTAINER_REGISTRY_NAMESPACE"`
+`"&prodResourceGroup=$RESOURCE_GROUP&prodClusterName=$CLUSTER_NAME&prodClusterNamespace=$CLUSTER_NAMESPACE"`
 `"&toolchainName=$TOOLCHAIN_NAME&branch=$BRANCH&pipeline_type=$PIPELINE_TYPE"
-#echo $PARAMETERS
+echo $PARAMETERS
 
 RESPONSE=$(curl -i -X POST \
   -H 'Content-Type: application/x-www-form-urlencoded' \

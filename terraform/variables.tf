@@ -24,7 +24,7 @@ variable "cluster_name" {
 variable "cluster_namespace" {
   type        = string
   description = "Kubernetes namespace to deploy into. NOTE: If the namespace does not exist, it will be created."
-  default     = "default"
+  default     = "example-bank"
 }
 
 variable "default_pool_size" {
