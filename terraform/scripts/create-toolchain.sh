@@ -14,7 +14,7 @@ BEARER_TOKEN=$(ibmcloud iam oauth-tokens | grep "$IAM_TOKEN" | sed -e "s/^$IAM_T
 TOOLCHAIN_REGION=$REGION
 if [[ ! $TOOLCHAIN_REGION =~ "ibm:" ]]; then
   export TOOLCHAIN_REGION="ibm:yp:$REGION"
-  export TOOLCHAIN_TEMPLATE_REPO="$REGION.git.cloud.ibm.com/open-toolchain/simple-helm-toolchain"
+  export TOOLCHAIN_TEMPLATE_REPO="https://$REGION.git.cloud.ibm.com/open-toolchain/simple-helm-toolchain"
 fi
 
 RESOURCE_GROUP_ID=$(ibmcloud resource group $RESOURCE_GROUP --output JSON | jq ".[].id" -r)

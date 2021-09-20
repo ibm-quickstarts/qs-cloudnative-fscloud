@@ -53,9 +53,9 @@ resource "ibm_container_vpc_cluster" "cluster" {
 }
 
 resource "null_resource" "create_kubernetes_toolchain" {
+  depends_on = [ibm_container_vpc_cluster.cluster]
   provisioner "local-exec" {
     command = "${path.cwd}/scripts/create-toolchain.sh"
-
     environment = {
       MOBILE_SIM              = "mobile-simulator-${formatdate("YYYYMMDDhhmm", timestamp())}"
       REGION                  = var.region
