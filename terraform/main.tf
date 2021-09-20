@@ -62,7 +62,7 @@ resource "null_resource" "create_kubernetes_toolchain" {
       APPLICATION_REPO        = "https://github.com/IBM/example-bank"
       RESOURCE_GROUP          = var.resource_group
       API_KEY                 = var.ibmcloud_api_key
-      CLUSTER_NAME            = var.cluster_name
+      CLUSTER_NAME            = ibm_container_vpc_cluster.cluster.id
       CLUSTER_NAMESPACE       = "example-bank"
       CONTAINER_REGISTRY_NAMESPACE = var.registry_namespace
       TOOLCHAIN_NAME          = "example-bank-toolchain${formatdate("YYYYMMDDhhmm", timestamp())}"
