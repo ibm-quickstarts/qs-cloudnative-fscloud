@@ -59,14 +59,14 @@ resource "null_resource" "create_kubernetes_toolchain" {
     environment = {
       MOBILE_SIM              = "mobile-simulator-${formatdate("YYYYMMDDhhmm", timestamp())}"
       REGION                  = var.region
-      TOOLCHAIN_TEMPLATE_REPO = "https://github.com/open-toolchain/secure-kube-toolchain"
+      TOOLCHAIN_TEMPLATE_REPO = "https://github.com/open-toolchain/simple-helm-toolchain"
       APPLICATION_REPO        = "https://github.com/IBM/example-bank"
       RESOURCE_GROUP          = var.resource_group
       API_KEY                 = var.ibmcloud_api_key
       CLUSTER_NAME            = var.cluster_name
       CLUSTER_NAMESPACE       = var.cluster_namespace
       CONTAINER_REGISTRY_NAMESPACE = var.registry_namespace
-      TOOLCHAIN_NAME          = "example-bank-toolchain"
+      TOOLCHAIN_NAME          = "example-bank-toolchain${formatdate("YYYYMMDDhhmm", timestamp())}"
       PIPELINE_TYPE           = "tekton"
       BRANCH                  = var.branch
     }
