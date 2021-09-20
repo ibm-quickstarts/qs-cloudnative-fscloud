@@ -16,18 +16,21 @@ provider "null" {
 }
 
 resource "ibm_is_vpc" "vpc1" {
-  name    = "bank-vpc1"
+  count = var.cluster_name == "bank_vpc_cluster" ? 1 : 0
+  name  = "bank-vpc-${formatdate("YYYYMMDDhhmm", timestamp())}"
 }
 
 resource "ibm_is_subnet" "subnet1" {
-  name                     = "bank-subnet1"
+  count                    = var.cluster_name == "bank_vpc_cluster" ? 1 : 0
+  name                     = "bank-subnet-${formatdate("YYYYMMDDhhmm", timestamp())}"
   vpc                      = ibm_is_vpc.vpc1.id
   zone                     = var.datacenter
   total_ipv4_address_count = 256
 }
 
 resource "ibm_resource_instance" "cos_instance" {
-  name     = "bank-cos-instance"
+  count    = var.cluster_name == "bank_vpc_cluster" ? 1 : 0
+  name     = "bank-cos-instance-${formatdate("YYYYMMDDhhmm", timestamp())}"
   service  = "cloud-object-storage"
   plan     = "standard"
   location = "global"
@@ -68,7 +71,7 @@ resource "null_resource" "create_kubernetes_toolchain" {
       CONTAINER_REGISTRY_NAMESPACE = var.registry_namespace
       TOOLCHAIN_NAME          = "example-bank-toolchain${formatdate("YYYYMMDDhhmm", timestamp())}"
       PIPELINE_TYPE           = "tekton"
-      BRANCH                  = var.branch
+      BRANCH                  = "master"
     }
   }
 }
