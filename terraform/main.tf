@@ -16,12 +16,10 @@ provider "null" {
 }
 
 resource "ibm_is_vpc" "vpc1" {
-  count = var.cluster_name == "bank_vpc_cluster" ? 1 : 0
   name  = "bank-vpc-${formatdate("YYYYMMDDhhmm", timestamp())}"
 }
 
 resource "ibm_is_subnet" "subnet1" {
-  count                    = var.cluster_name == "bank_vpc_cluster" ? 1 : 0
   name                     = "bank-subnet-${formatdate("YYYYMMDDhhmm", timestamp())}"
   vpc                      = ibm_is_vpc.vpc1.id
   zone                     = var.datacenter
@@ -29,7 +27,6 @@ resource "ibm_is_subnet" "subnet1" {
 }
 
 resource "ibm_resource_instance" "cos_instance" {
-  count    = var.cluster_name == "bank_vpc_cluster" ? 1 : 0
   name     = "bank-cos-instance-${formatdate("YYYYMMDDhhmm", timestamp())}"
   service  = "cloud-object-storage"
   plan     = "standard"
@@ -41,8 +38,7 @@ data "ibm_resource_group" "resource_group" {
 }
 
 resource "ibm_container_vpc_cluster" "cluster" {
-  count             = var.cluster_name == "bank_vpc_cluster" ? 1 : 0
-  name              = var.cluster_name
+  name              = "bank_vpc_cluster-${formatdate("YYYYMMDDhhmm", timestamp())}"
   vpc_id            = ibm_is_vpc.vpc1.id
   kube_version      = var.kube_version
   flavor            = var.machine_type
@@ -67,7 +63,7 @@ resource "null_resource" "create_kubernetes_toolchain" {
       RESOURCE_GROUP          = var.resource_group
       API_KEY                 = var.ibmcloud_api_key
       CLUSTER_NAME            = var.cluster_name
-      CLUSTER_NAMESPACE       = var.cluster_namespace
+      CLUSTER_NAMESPACE       = "example-bank"
       CONTAINER_REGISTRY_NAMESPACE = var.registry_namespace
       TOOLCHAIN_NAME          = "example-bank-toolchain${formatdate("YYYYMMDDhhmm", timestamp())}"
       PIPELINE_TYPE           = "tekton"

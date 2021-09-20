@@ -15,18 +15,6 @@ variable "resource_group" {
   default     = "default"
 }
 
-variable "cluster_name" {
-  type        = string
-  description = "Name of the OpenShift cluster where your application will be deployed. If you use the default value, a new cluster is provisioned. NOTE: If you override the default value, that VPC cluster must already exist."
-  default     = "bank_vpc_cluster"
-}
-
-variable "cluster_namespace" {
-  type        = string
-  description = "Kubernetes namespace to deploy into. NOTE: If the namespace does not exist, it will be created."
-  default     = "example-bank"
-}
-
 variable "default_pool_size" {
   type        = string
   description = "Number of worker nodes for the new Kubernetes cluster"
