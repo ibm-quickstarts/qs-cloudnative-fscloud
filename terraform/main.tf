@@ -23,7 +23,7 @@ resource "ibm_is_vpc" "vpc1" {
 resource "ibm_is_subnet" "subnet1" {
   count                    = 0
   name                     = "bank-subnet-${formatdate("YYYYMMDDhhmm", timestamp())}"
-  vpc                      = ibm_is_vpc.vpc1.id
+  vpc                      = "bank-vpc-202109211701"
   zone                     = var.datacenter
   total_ipv4_address_count = 256
 }
@@ -43,14 +43,14 @@ data "ibm_resource_group" "resource_group" {
 resource "ibm_container_vpc_cluster" "cluster" {
   count             = 0
   name              = "bank_vpc_cluster-${formatdate("YYYYMMDDhhmm", timestamp())}"
-  vpc_id            = ibm_is_vpc.vpc1.id
+  vpc_id            = "bank-vpc-202109211701"
   kube_version      = var.kube_version
   flavor            = var.machine_type
   worker_count      = var.default_pool_size
-  cos_instance_crn  = ibm_resource_instance.cos_instance.id
+  cos_instance_crn  = "bank-cos-instance-202109211701"
   resource_group_id = data.ibm_resource_group.resource_group.id
   zones {
-      subnet_id = ibm_is_subnet.subnet1.id
+      subnet_id = "bank-subnet-202109211702"
       name      = var.datacenter
     }
 }
