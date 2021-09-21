@@ -217,7 +217,7 @@ ibmcloud plugin update --all
 ibmcloud oc cluster config -c $CLUSTER_NAME --admin
 sleep 10  # Waiting 10 seconds for configuration to be established
 echo "Creating new project 'example-bank'..."
-oc project example-bank
+oc new-project example-bank
 
 # Create OC secrets
 echo "Creating secrets..."
@@ -235,17 +235,23 @@ oc create secret generic mobile-simulator-secrets \
 oc create secret generic bank-oidc-adminuser --from-literal=APP_ID_ADMIN_USER=bankadmin --from-literal=APP_ID_ADMIN_PASSWORD=password
 oc create secret generic bank-db-secret --from-literal=DB_SERVERNAME=creditdb --from-literal=DB_PORTNUMBER=5432 --from-literal=DB_DATABASENAME=example --from-literal=DB_USER=postgres --from-literal=DB_PASSWORD=postgres
 
+# debugging
+echo "Debugging info:"
+pwd
+ls -lart
+
+
 # create the operator group
 echo "Creating the OperatorGroup 'bank-postgresql'..."
-oc apply -f operatorgroup.yaml
+oc apply -f scripts/operatorgroup.yaml
 
 # create the subscription
 echo "Creating the Subscription 'bank-subscription'..."
-oc apply -f sub.yaml
+oc apply -f scripts/sub.yaml
 
 # create the database
 echo "Creating the PostgreSQL database 'creditdb'..."
-oc apply -f db.yaml
+oc apply -f scripts/db.yaml
 
 echo "Waiting for database to be created..."
 sleep 30
@@ -278,7 +284,7 @@ oc get secrets
 
 # create job
 echo "Creating the job 'cc-schema-load'..."
-oc apply -f job.yaml
+oc apply -f scripts/job.yaml
 echo "Waiting 60 seconds for job to complete..."
 sleep 60
 oc get jobs
