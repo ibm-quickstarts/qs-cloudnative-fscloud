@@ -293,8 +293,6 @@ done
 echo "Connecting to the 'creditdb' database..."
 oc expose deploy creditdb --port=5432 --target-port=5432 --type=LoadBalancer --name my-pg-svc
 oc get svc
-kubectl create secret generic bank-db-secret --from-literal=DB_SERVERNAME=creditdb --from-literal=DB_PORTNUMBER=5432 \
-  --from-literal=DB_DATABASENAME=example --from-literal=DB_USER=postgres --from-literal=DB_PASSWORD=postgres
 oc get secrets
 
 # create job
