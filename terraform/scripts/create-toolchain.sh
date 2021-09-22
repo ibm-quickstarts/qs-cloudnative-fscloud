@@ -303,12 +303,17 @@ sleep 60
 oc get jobs
 oc get pods
 
+# URL encode TOOLCHAIN_REGION, TOOLCHAIN_TEMPLATE_REPO, APPLICATION_REPO, and API_KEY
+export TOOLCHAIN_REGION=$(echo "$TOOLCHAIN_REGION" | jq -Rr @uri)
+export TOOLCHAIN_TEMPLATE_REPO=$(echo "$TOOLCHAIN_TEMPLATE_REPO" | jq -Rr @uri)
+export APPLICATION_REPO=$(echo "$APPLICATION_REPO" | jq -Rr @uri)
+export API_KEY=$(echo "$API_KEY" | jq -Rr @uri)
 
 # create the toolchain
 echo "Creating the toolchain..."
 PARAMETERS="region_id=$TOOLCHAIN_REGION&resourceGroupId=$RESOURCE_GROUP_ID&autocreate=true"`
 `"&repository=$TOOLCHAIN_TEMPLATE_REPO&sourceZipUrl=$APPLICATION_REPO&app_repo=$APPLICATION_REPO&apiKey=$API_KEY"`
-`"&registryRegion=$REGION&registryNamespace=$CONTAINER_REGISTRY_NAMESPACE&prodRegion=$REGION"`
+`"&registryRegion=$TOOLCHAIN_REGION&registryNamespace=$CONTAINER_REGISTRY_NAMESPACE&prodRegion=$TOOLCHAIN_REGION"`
 `"&prodResourceGroup=$RESOURCE_GROUP&prodClusterName=$CLUSTER_NAME&prodClusterNamespace=$CLUSTER_NAMESPACE"`
 `"&toolchainName=$TOOLCHAIN_NAME&branch=$BRANCH&pipeline_type=$PIPELINE_TYPE"
 echo $PARAMETERS
@@ -317,7 +322,8 @@ RESPONSE=$(curl -i -X POST \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H 'Accept: application/json' \
   -H "Authorization: $BEARER_TOKEN" \
-  "https://cloud.ibm.com/devops/setup/deploy?env_id=$TOOLCHAIN_REGION&$PARAMETERS")
+  -d "$PARAMETERS"
+  "https://cloud.ibm.com/devops/setup/deploy?env_id=$TOOLCHAIN_REGION")
 
 echo "$RESPONSE"
 LOCATION=$(grep location <<<"$RESPONSE" | awk {'print $2'})
