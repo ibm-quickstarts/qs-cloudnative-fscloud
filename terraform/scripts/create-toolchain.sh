@@ -235,12 +235,6 @@ oc create secret generic mobile-simulator-secrets \
 oc create secret generic bank-oidc-adminuser --from-literal=APP_ID_ADMIN_USER=bankadmin --from-literal=APP_ID_ADMIN_PASSWORD=password
 oc create secret generic bank-db-secret --from-literal=DB_SERVERNAME=creditdb --from-literal=DB_PORTNUMBER=5432 --from-literal=DB_DATABASENAME=example --from-literal=DB_USER=postgres --from-literal=DB_PASSWORD=postgres
 
-# debugging
-echo "Debugging info:"
-pwd
-ls -lart
-
-
 # create the operator group
 echo "Creating the OperatorGroup 'bank-postgresql'..."
 oc apply -f scripts/operatorgroup.yaml
