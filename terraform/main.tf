@@ -72,7 +72,7 @@ resource "null_resource" "create_kubernetes_toolchain" {
       CLUSTER_NAME            = ibm_container_vpc_cluster.cluster.id
       CLUSTER_NAMESPACE       = "example-bank"
       CONTAINER_REGISTRY_NAMESPACE = var.registry_namespace
-      TOOLCHAIN_NAME          = "example-bank-toolchain${formatdate("YYYYMMDDhhmm", timestamp())}"
+      TOOLCHAIN_NAME          = "example-bank-toolchain-${formatdate("YYYYMMDDhhmm", timestamp())}"
       PIPELINE_TYPE           = "tekton"
       BRANCH                  = "main"
     }

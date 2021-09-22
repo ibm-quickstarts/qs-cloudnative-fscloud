@@ -243,11 +243,32 @@ oc apply -f scripts/operatorgroup.yaml
 echo "Creating the Subscription 'bank-subscription'..."
 oc apply -f scripts/sub.yaml
 
+echo "Waiting for PostgreSQL Operator to be created..."
+sleep 30
+WAIT=240
+COUNTER=0
+while [ $COUNTER -lt $WAIT ]; do
+  OG_STATUS=$(oc get pods | grep postgresql-operator | awk {'print $3'})
+  if [[ $OG_STATUS == "Running" ]];then
+    echo "OG Status: $OG_STATUS"
+    break
+  else
+    COUNTER=$((COUNTER+30))
+    echo "OG Status: $OG_STATUS"
+    if [[ $COUNTER == $WAIT ]];then
+      echo "Operator took longer than 4 minutes to create. This could be a problem."
+      break
+    fi
+    echo "Trying again in 30 seconds..."
+    sleep 30
+  fi
+done
+
 # create the database
 echo "Creating the PostgreSQL database 'creditdb'..."
 oc apply -f scripts/db.yaml
 
-echo "Waiting for database to be created..."
+echo "Waiting for PostgreSQL database to be created..."
 sleep 30
 WAIT=240
 COUNTER=0
