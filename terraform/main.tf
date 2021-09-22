@@ -45,7 +45,6 @@ data "ibm_resource_group" "resource_group" {
 }
 
 resource "ibm_container_vpc_cluster" "cluster" {
-  count             = 0
   name              = "bank_vpc_cluster-${formatdate("YYYYMMDDhhmm", timestamp())}"
   vpc_id            = ibm_is_vpc.vpc1.id
   kube_version      = var.kube_version
