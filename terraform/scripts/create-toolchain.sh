@@ -270,7 +270,7 @@ oc apply -f scripts/db.yaml
 
 echo "Waiting for PostgreSQL database to be created..."
 sleep 30
-WAIT=240
+WAIT=300
 COUNTER=0
 while [ $COUNTER -lt $WAIT ]; do
   DB_STATUS=$(oc get pods | grep creditdb | awk {'print $3'})
@@ -304,7 +304,6 @@ oc get jobs
 oc get pods
 
 # URL encode TOOLCHAIN_REGION, TOOLCHAIN_TEMPLATE_REPO, APPLICATION_REPO, and API_KEY
-export TOOLCHAIN_REGION=$(echo "$TOOLCHAIN_REGION" | jq -Rr @uri)
 export TOOLCHAIN_TEMPLATE_REPO=$(echo "$TOOLCHAIN_TEMPLATE_REPO" | jq -Rr @uri)
 export APPLICATION_REPO=$(echo "$APPLICATION_REPO" | jq -Rr @uri)
 export API_KEY=$(echo "$API_KEY" | jq -Rr @uri)
