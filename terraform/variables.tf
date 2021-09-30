@@ -44,3 +44,17 @@ variable "ibmcloud_api_key" {
   description = "The IAM API Key for IBM Cloud access (https://cloud.ibm.com/iam/apikeys)"
 }
 
+variable "sm_name" {
+  description = "Name of the Secrets Manager tool integration (Ex. my-secrets-manager)"
+  default     = "sm-compliance-secrets"
+}
+
+variable "sm_service_name" {
+  description = "Name of the Secrets Manager service. NOTE: Only 1 Secrets Manager instance is allowed. If you already have a Secrets Manager service provisioned, please override this value to its name."
+  default     = "compliance-ci-secrets-manager"
+}
+
+variable "gitlab_token" {
+  type        = string
+  description = "A GitLab Personal Access Token (Ex. https://us-south.git.cloud.ibm.com/-/profile/personal_access_tokens NOTE: Make sure to create your token in the same region as your toolchain, or 'region' variable.)"
+}
