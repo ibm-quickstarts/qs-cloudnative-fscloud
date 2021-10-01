@@ -47,7 +47,7 @@ resource "ibm_resource_instance" "cos_instance" {
 
 resource "ibm_cos_bucket" "cos_bucket" {
   bucket_name          = "bank-cos-bucket-${formatdate("YYYYMMDDhhmm", timestamp())}"
-  resource_instance_id = ibm_resource_instance.cos_instance[0].id
+  resource_instance_id = ibm_resource_instance.cos_instance.id
   region_location      = var.region
   storage_class        = "standard"
 }
@@ -67,7 +67,7 @@ resource "ibm_iam_service_policy" "cos_policy" {
 
   resources {
     service              = "cloud-object-storage"
-    resource_instance_id = ibm_resource_instance.cos_instance[0].id
+    resource_instance_id = ibm_resource_instance.cos_instance.id
   }
 }
 
@@ -103,7 +103,7 @@ resource "null_resource" "create_kubernetes_toolchain" {
       PIPELINE_TYPE           = "tekton"
       BRANCH                  = "main"
       APP_NAME                = "bank-app-${formatdate("YYYYMMDDhhmm", timestamp())}"
-      COS_BUCKET_NAME         = ibm_cos_bucket.cos_bucket[0].bucket_name
+      COS_BUCKET_NAME         = ibm_cos_bucket.cos_bucket.bucket_name
       COS_URL                 = "s3.private.${var.region}.cloud-object-storage.appdomain.cloud"
       COS_API_KEY             = ibm_iam_service_api_key.cos_service_api_key.apikey
       SM_NAME                 = var.sm_name
