@@ -46,12 +46,12 @@ variable "ibmcloud_api_key" {
 
 variable "sm_name" {
   description = "Name of the Secrets Manager tool integration (Ex. my-secrets-manager)"
-  default     = "sm-compliance-secrets"
+  default     = "bank-secrets"
 }
 
 variable "sm_service_name" {
   description = "Name of the Secrets Manager service. NOTE: Only 1 Secrets Manager instance is allowed. If you already have a Secrets Manager service provisioned, please override this value to its name."
-  default     = "compliance-ci-secrets-manager"
+  default     = "bank-secrets-manager"
 }
 
 variable "gitlab_token" {

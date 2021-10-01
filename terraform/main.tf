@@ -24,7 +24,7 @@ resource "ibm_is_vpc" "vpc1" {
 }
 
 resource "ibm_is_public_gateway" "vpc_gateway" {
-  name = "vpc-gateway-${formatdate("YYYYMMDDhhmm", timestamp())}"
+  name = "bank-vpc-gateway-${formatdate("YYYYMMDDhhmm", timestamp())}"
   vpc  = ibm_is_vpc.vpc1.id
   zone = var.datacenter
 }
@@ -46,18 +46,18 @@ resource "ibm_resource_instance" "cos_instance" {
 }
 
 resource "ibm_cos_bucket" "cos_bucket" {
-  bucket_name          = "cos-compliance-bucket-${formatdate("YYYYMMDDhhmm", timestamp())}"
+  bucket_name          = "bank-cos-bucket-${formatdate("YYYYMMDDhhmm", timestamp())}"
   resource_instance_id = ibm_resource_instance.cos_instance[0].id
   region_location      = var.region
   storage_class        = "standard"
 }
 
 resource "ibm_iam_service_id" "cos_serviceID" {
-  name = "cos_service_id"
+  name = "bank-cos-service-id"
 }
 
 resource "ibm_iam_service_api_key" "cos_service_api_key" {
-  name           = "cos_service_api_key"
+  name           = "bank-cos-service-api-key"
   iam_service_id = ibm_iam_service_id.cos_serviceID.iam_id
 }
 
