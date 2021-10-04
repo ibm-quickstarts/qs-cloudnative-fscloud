@@ -416,6 +416,7 @@ PARAMETERS="autocreate=true&appName=$APP_NAME&apiKey=$API_KEY"`
 `"&sourceRepoUrl=$APPLICATION_REPO&resourceGroupId=$RESOURCE_GROUP_ID"`
 `"&registryRegion=$TOOLCHAIN_REGION&registryNamespace=$CONTAINER_REGISTRY_NAMESPACE&devRegion=$REGION"`
 `"&devResourceGroup=$RESOURCE_GROUP&devClusterName=$CLUSTER_NAME&devClusterNamespace=$CLUSTER_NAMESPACE"`
+`"&prodResourceGroup=$RESOURCE_GROUP&prodClusterName=$CLUSTER_NAME&prodRegion=$REGION&prodClusterNamespace=$CLUSTER_NAMESPACE"`
 `"&toolchainName=$TOOLCHAIN_NAME&pipeline_type=$PIPELINE_TYPE&gitToken=$GITLAB_TOKEN"`
 `"&cosBucketName=$COS_BUCKET_NAME&cosEndpoint=$COS_URL&cosApiKey=$COS_API_KEY"`
 `"&smName=$SM_NAME&smRegion=$TOOLCHAIN_REGION&smResourceGroup=$RESOURCE_GROUP&smInstanceName=$SM_SERVICE_NAME"
