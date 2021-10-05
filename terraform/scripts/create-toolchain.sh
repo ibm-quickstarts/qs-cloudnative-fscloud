@@ -10,13 +10,6 @@ IAM_TOKEN="IAM token:  "
 BEARER_TOKEN=$(ibmcloud iam oauth-tokens | grep "$IAM_TOKEN" | sed -e "s/^$IAM_TOKEN//")
 #echo $BEARER_TOKEN
 
-# prefix region for toolchains
-TOOLCHAIN_REGION=$REGION
-if [[ ! $TOOLCHAIN_REGION =~ "ibm:" ]]; then
-  export TOOLCHAIN_REGION="ibm:yp:$REGION"
-  export TOOLCHAIN_TEMPLATE_REPO="https://$REGION.git.cloud.ibm.com/open-toolchain/simple-helm-toolchain"
-fi
-
 RESOURCE_GROUP_ID=$(ibmcloud resource group $RESOURCE_GROUP --output JSON | jq ".[].id" -r)
 
 # Create AppID service instance
@@ -402,6 +395,7 @@ for i in ${!SECRETS_NAMES[@]}; do
   fi
 done
 
+export TOOLCHAIN_REGION="ibm:yp:$REGION"
 # URL encode TOOLCHAIN_REGION, TOOLCHAIN_TEMPLATE_REPO, APPLICATION_REPO, and API_KEY
 export TOOLCHAIN_TEMPLATE_REPO=$(echo "$TOOLCHAIN_TEMPLATE_REPO" | jq -Rr @uri)
 export APPLICATION_REPO=$(echo "$APPLICATION_REPO" | jq -Rr @uri)
