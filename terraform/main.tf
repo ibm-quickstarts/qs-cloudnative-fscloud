@@ -101,7 +101,7 @@ resource "null_resource" "create_kubernetes_toolchain" {
       CONTAINER_REGISTRY_NAMESPACE = var.registry_namespace
       TOOLCHAIN_NAME          = "example-bank-toolchain-${formatdate("YYYYMMDDhhmm", timestamp())}"
       PIPELINE_TYPE           = "tekton"
-      BRANCH                  = "main"
+      BRANCH                  = "master"
       APP_NAME                = "bank-app-${formatdate("YYYYMMDDhhmm", timestamp())}"
       COS_BUCKET_NAME         = ibm_cos_bucket.cos_bucket.bucket_name
       COS_URL                 = "s3.private.${var.region}.cloud-object-storage.appdomain.cloud"
