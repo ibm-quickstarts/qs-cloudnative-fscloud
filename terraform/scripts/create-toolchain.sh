@@ -238,7 +238,7 @@ oc apply -f scripts/sub.yaml
 
 echo "Waiting for PostgreSQL Operator to be created..."
 sleep 30
-WAIT=240
+WAIT=300
 COUNTER=0
 while [ $COUNTER -lt $WAIT ]; do
   OG_STATUS=$(oc get pods | grep postgresql-operator | awk {'print $3'})
@@ -249,7 +249,7 @@ while [ $COUNTER -lt $WAIT ]; do
     COUNTER=$((COUNTER+30))
     echo "OG Status: $OG_STATUS"
     if [[ $COUNTER == $WAIT ]];then
-      echo "Operator took longer than 4 minutes to create. This could be a problem."
+      echo "Operator took longer than 5 minutes to create. This could be a problem."
       break
     fi
     echo "Trying again in 30 seconds..."
@@ -411,7 +411,7 @@ PARAMETERS="autocreate=true&appName=$APP_NAME&apiKey=$API_KEY"`
 `"&registryRegion=$TOOLCHAIN_REGION&registryNamespace=$CONTAINER_REGISTRY_NAMESPACE&devRegion=$REGION"`
 `"&devResourceGroup=$RESOURCE_GROUP&devClusterName=$CLUSTER_NAME&devClusterNamespace=$CLUSTER_NAMESPACE"`
 `"&prodResourceGroup=$RESOURCE_GROUP&prodClusterName=$CLUSTER_NAME&prodRegion=$REGION&prodClusterNamespace=$CLUSTER_NAMESPACE"`
-`"&toolchainName=$TOOLCHAIN_NAME&pipeline_type=$PIPELINE_TYPE&gitToken=$GITLAB_TOKEN"`
+`"&toolchainName=$TOOLCHAIN_NAME&pipeline_type=$PIPELINE_TYPE&pipelineConfigBranch=$PIPELINE_CONFIG_BRANCH&gitToken=$GITLAB_TOKEN"`
 `"&cosBucketName=$COS_BUCKET_NAME&cosEndpoint=$COS_URL&cosApiKey=$COS_API_KEY"`
 `"&smName=$SM_NAME&smRegion=$TOOLCHAIN_REGION&smResourceGroup=$RESOURCE_GROUP&smInstanceName=$SM_SERVICE_NAME"
 echo $PARAMETERS
