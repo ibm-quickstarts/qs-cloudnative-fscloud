@@ -102,7 +102,7 @@ resource "null_resource" "create_kubernetes_toolchain" {
       TOOLCHAIN_NAME          = "example-bank-toolchain-${formatdate("YYYYMMDDhhmm", timestamp())}"
       PIPELINE_TYPE           = "tekton"
       PIPELINE_CONFIG_BRANCH  = "main"
-      BRANCH                  = "main"
+      BRANCH                  = "master"
       APP_NAME                = "bank-app-${formatdate("YYYYMMDDhhmm", timestamp())}"
       COS_BUCKET_NAME         = ibm_cos_bucket.cos_bucket.bucket_name
       COS_URL                 = "s3.private.${var.region}.cloud-object-storage.appdomain.cloud"
