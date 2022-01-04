@@ -355,6 +355,11 @@ SM_INSTANCE_ID="${ADDR[8]}"
 SECRETS_NAMES=("IAM_API_Key" "GPG_Key" "COS_API_Key")
 SECRETS_PAYLOADS=("$API_KEY" "$GPG_SECRET" "$COS_API_KEY")
 
+print("************************** DEBUG INFO ******************************")
+print("COS Endpoint: $COS_URL")
+print("COS API Key: $COS_API_KEY")
+print("************************** DEBUG INFO ******************************")
+
 # loop through secrets names and create secrets for each in the secrets manager
 for i in ${!SECRETS_NAMES[@]}; do
   echo "Creating Arbitrary secret for ${SECRETS_NAMES[$i]} in $SM_SERVICE_NAME..."
@@ -464,12 +469,6 @@ export ISSUES_REPO=$(echo "${ISS_URL%.*}" | jq -Rr @uri)
 export EVIDENCE_REPO=$(echo "${EVI_URL%.*}" | jq -Rr @uri)
 export INVENTORY_REPO=$(echo "${INV_URL%.*}" | jq -Rr @uri)
 
-# scc values
-export sccName="bank-scc"
-export triggerSccScan="enabled"
-export sccProfile="bank-scc-profile"
-export sccScope="bank-scc-scope"
-
 # create the cd toolchain
 echo "Creating the CD Toolchain..."
 PARAMETERS="autocreate=true&appName=$APP_NAME&ibmCloudApiKey={vault::$SM_NAME.Default.IAM_API_Key}"`
@@ -481,7 +480,7 @@ PARAMETERS="autocreate=true&appName=$APP_NAME&ibmCloudApiKey={vault::$SM_NAME.De
 `"&cosBucketName=$COS_BUCKET_NAME&cosEndpoint=$COS_URL&cosApiKey={vault::$SM_NAME.Default.COS_API_Key}&vaultSecret={vault::$SM_NAME.Default.GPG_Key}"`
 `"&smName=$SM_NAME&smRegion=$TOOLCHAIN_REGION&smResourceGroup=$RESOURCE_GROUP&smInstanceName=$SM_SERVICE_NAME&doiToolchainId=$TOOLCHAIN_ID"`
 `"&incidentIssuesRepo=$ISSUES_REPO&evidenceLockerRepo=$EVIDENCE_REPO&inventoryRepo=$INVENTORY_REPO"`
-`"&sccName=$sccName&triggerSccScan=$triggerSccScan&sccProfile=$sccProfile&sccScope=$sccScope&sccAPIKey={vault::$SM_NAME.Default.IAM_API_Key}"
+`"&sccName=$SCC_NAME&triggerSccScan=$SCC_TRIGGER&sccProfile=$SCC_PROFILE&sccScope=$SCC_SCOPE&sccAPIKey={vault::$SM_NAME.Default.IAM_API_Key}"
 echo $PARAMETERS
 
 RESPONSE=$(curl -i -X POST \
