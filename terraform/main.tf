@@ -62,7 +62,7 @@ resource "ibm_iam_service_api_key" "cos_service_api_key" {
 }
 
 resource "ibm_iam_service_policy" "cos_policy" {
-  iam_service_id = ibm_iam_service_id.cos_serviceID.id
+  iam_service_id = ibm_iam_service_id.cos_serviceID.iam_id
   roles          = ["Reader", "Writer"]
 
   resources {
