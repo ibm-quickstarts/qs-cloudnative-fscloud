@@ -95,7 +95,7 @@ resource "null_resource" "create_kubernetes_toolchain" {
       REGION                  = var.region
       CI_TOOLCHAIN_REPO       = "https://${var.region}.git.cloud.ibm.com/open-toolchain/compliance-ci-toolchain"
       CD_TOOLCHAIN_REPO       = "https://${var.region}.git.cloud.ibm.com/open-toolchain/compliance-cd-toolchain"
-      APPLICATION_REPO        = "https://github.com/ChuckCox/example-bank-toolchain"
+      APPLICATION_REPO        = "https://github.com/IBM/example-bank-toolchain/tree/devops-template"
       RESOURCE_GROUP          = var.resource_group
       API_KEY                 = var.ibmcloud_api_key
       CLUSTER_NAME            = ibm_container_vpc_cluster.cluster.name
