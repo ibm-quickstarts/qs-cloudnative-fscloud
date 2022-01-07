@@ -102,7 +102,7 @@ resource "null_resource" "create_kubernetes_toolchain" {
       CI_TOOLCHAIN_NAME       = "bank-ci-toolchain-${formatdate("YYYYMMDDhhmm", timestamp())}"
       CD_TOOLCHAIN_NAME       = "bank-cd-toolchain-${formatdate("YYYYMMDDhhmm", timestamp())}"
       PIPELINE_TYPE           = "tekton"
-      PIPELINE_CONFIG_BRANCH  = "main"
+      PIPELINE_CONFIG_BRANCH  = "devops-template"
       BRANCH                  = "master"
       APP_NAME                = "bank-app-${formatdate("YYYYMMDDhhmm", timestamp())}"
       COS_BUCKET_NAME         = ibm_cos_bucket.cos_bucket.bucket_name
