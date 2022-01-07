@@ -62,12 +62,10 @@ resource "ibm_iam_service_api_key" "cos_service_api_key" {
 }
 
 resource "ibm_iam_service_policy" "cos_policy" {
-  iam_service_id = ibm_iam_service_id.cos_serviceID.iam_id
+  iam_service_id = ibm_iam_service_id.cos_serviceID.id
   roles          = ["Reader", "Writer"]
-
   resources {
-    service              = "cloud-object-storage"
-    resource_instance_id = ibm_resource_instance.cos_instance.id
+    service      = "cloud-object-storage"
   }
 }
 
