@@ -355,11 +355,6 @@ SM_INSTANCE_ID="${ADDR[8]}"
 SECRETS_NAMES=("IAM_API_Key" "GPG_Key" "COS_API_Key")
 SECRETS_PAYLOADS=("$API_KEY" "$GPG_SECRET" "$COS_API_KEY")
 
-echo "************************** DEBUG INFO ******************************"
-echo "COS Endpoint: $COS_URL"
-echo "COS API Key: $COS_API_KEY"
-echo "************************** DEBUG INFO ******************************"
-
 # loop through secrets names and create secrets for each in the secrets manager
 for i in ${!SECRETS_NAMES[@]}; do
   echo "Creating Arbitrary secret for ${SECRETS_NAMES[$i]} in $SM_SERVICE_NAME..."
