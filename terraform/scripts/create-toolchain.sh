@@ -5,11 +5,6 @@
 # log in using the api key
 ibmcloud login --apikey "$API_KEY" -r "$REGION" -g "$RESOURCE_GROUP"
 
-# get the bearer token to create the toolchain instance
-IAM_TOKEN="IAM token:  "
-BEARER_TOKEN=$(ibmcloud iam oauth-tokens | grep "$IAM_TOKEN" | sed -e "s/^$IAM_TOKEN//")
-#echo $BEARER_TOKEN
-
 RESOURCE_GROUP_ID=$(ibmcloud resource group $RESOURCE_GROUP --output JSON | jq ".[].id" -r)
 
 # Create AppID service instance
@@ -305,7 +300,7 @@ else
   echo "Creating Secrets Manager service now..."
   # NOTE: Secrets Manager service can take approx 5-8 minutes to provision
   ibmcloud resource service-instance-create $SM_SERVICE_NAME secrets-manager lite $REGION
-  wait_secs=600
+  wait_secs=900
   count=0
   sleep_time=60
   wait_mins=$(($wait_secs / $sleep_time))
@@ -365,7 +360,7 @@ for i in ${!SECRETS_NAMES[@]}; do
   RESPONSE=$(curl --write-out '%{http_code}' --silent --output /dev/null -i -X POST \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -H "Authorization: $BEARER_TOKEN" \
+    -H "Authorization: $iamtoken" \
     -d "$REQUEST_BODY" \
     "https://$SM_INSTANCE_ID.$REGION.secrets-manager.appdomain.cloud/api/v1/secrets/arbitrary")
   if [[ "$RESPONSE" =~ ^2 ]]; then
@@ -418,7 +413,7 @@ echo $PARAMETERS
 RESPONSE=$(curl -i -X POST \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H 'Accept: application/json' \
-  -H "Authorization: $BEARER_TOKEN" \
+  -H "Authorization: $iamtoken" \
   -d "$PARAMETERS" \
   "https://cloud.ibm.com/devops/setup/deploy?env_id=$TOOLCHAIN_REGION")
 
@@ -435,7 +430,7 @@ sleep 60
 echo "Gathering data from the CI Toolchain..."
 RESPONSE=$(curl -s \
   -H 'Accept: application/json' \
-  -H "Authorization: $BEARER_TOKEN" \
+  -H "Authorization: $iamtoken" \
   "${LOCATION%$'\r'}?include=services,unconfigured")
 
 # parse the json to obtain the evidence, inventory, and issues repo URLs
@@ -481,7 +476,7 @@ echo $PARAMETERS
 RESPONSE=$(curl -i -X POST \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H 'Accept: application/json' \
-  -H "Authorization: $BEARER_TOKEN" \
+  -H "Authorization: $iamtoken" \
   -d "$PARAMETERS" \
   "https://cloud.ibm.com/devops/setup/deploy?env_id=$TOOLCHAIN_REGION")
 
