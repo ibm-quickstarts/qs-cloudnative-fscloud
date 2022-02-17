@@ -345,10 +345,14 @@ gpg --export-secret-key root@cipipeline.ibm.com  | base64 > privatekey.txt
 IN=$(ibmcloud resource service-instance "$SM_SERVICE_NAME" | grep crn)
 IFS=':' read -ra ADDR <<< "$IN"
 SM_INSTANCE_ID="${ADDR[8]}"
+echo "https://$SM_INSTANCE_ID.$REGION.secrets-manager.appdomain.cloud/api/v1/secrets/arbitrary"
 
 # get secrets data for API, GPG, and COS API keys
 SECRETS_NAMES=("IAM_API_Key" "GPG_Key" "COS_API_Key")
 SECRETS_PAYLOADS=("$API_KEY" "$GPG_SECRET" "$COS_API_KEY")
+
+# get a new Bearer token
+iamtoken=$(ibmcloud iam oauth-tokens | awk '/IAM/{ print $3" "$4 }')
 
 # loop through secrets names and create secrets for each in the secrets manager
 for i in ${!SECRETS_NAMES[@]}; do
