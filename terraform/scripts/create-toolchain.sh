@@ -298,7 +298,7 @@ if [[ $SM_FOUND ]]; then
 else
   echo "Secrets Manager '$SM_SERVICE_NAME' does not exist."
   echo "Creating Secrets Manager service now..."
-  # NOTE: Secrets Manager service can take approx 5-8 minutes to provision
+  # NOTE: Secrets Manager service can take up to 15 minutes to provision
   ibmcloud resource service-instance-create $SM_SERVICE_NAME secrets-manager lite $REGION
   wait_secs=900
   count=0
@@ -314,7 +314,8 @@ else
       count=$(($count + $sleep_time))
       if [[ $count -gt $wait_secs ]]; then
         echo "Secrets Manager service took longer than $wait_mins minutes to provision."
-        echo "You might have to re-configure this integration in the toolchain once the service finally provisions."
+        echo "Please apply the Schematics plan once again after the '$SM_SERVICE_NAME' Secrets Manager has successfully provisioned."
+        exit 1
       else
         echo "Waiting $sleep_time seconds to check again..."
         sleep $sleep_time
@@ -345,7 +346,7 @@ gpg --export-secret-key root@cipipeline.ibm.com  | base64 > privatekey.txt
 IN=$(ibmcloud resource service-instance "$SM_SERVICE_NAME" | grep crn)
 IFS=':' read -ra ADDR <<< "$IN"
 SM_INSTANCE_ID="${ADDR[8]}"
-echo "https://$SM_INSTANCE_ID.$REGION.secrets-manager.appdomain.cloud/api/v1/secrets/arbitrary"
+#echo "https://$SM_INSTANCE_ID.$REGION.secrets-manager.appdomain.cloud/api/v1/secrets/arbitrary"
 
 # get secrets data for API, GPG, and COS API keys
 SECRETS_NAMES=("IAM_API_Key" "GPG_Key" "COS_API_Key")
